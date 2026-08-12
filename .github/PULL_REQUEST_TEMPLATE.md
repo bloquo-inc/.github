@@ -1,10 +1,3 @@
-<!--
-Os títulos abaixo espelham as seções que a skill /dev-workflow:open-pr preenche automaticamente,
-então o corpo gerado por ela encaixa direto aqui em vez de cair na estrutura default.
-Apague as seções que não se aplicam — PR pequeno não precisa de todas.
-Os comentários HTML não aparecem no PR renderizado.
--->
-
 ## 🎯 O que muda
 
 <!-- A capacidade que entra, em linguagem de domínio: o que o time ou o usuário passa a poder fazer. -->
