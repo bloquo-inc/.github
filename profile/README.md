@@ -1,4 +1,4 @@
-# 🧱 Bloquo
+# Bloquo
 
 **🚀 O futuro do dinheiro começa aqui.**
 
