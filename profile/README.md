@@ -36,7 +36,7 @@ O time de Tecnologia opera com base em princípios documentados e versionados no
 
 O handbook também reúne o playbook de responsabilidades e times, e as práticas adotadas por Engenharia, Dados, IA, Infraestrutura e Segurança.
 
-📝 Incidentes são registrados e analisados em [postmortens](https://github.com/bloquo-inc/postmortens) — sem culpados, com foco em aprendizado e melhoria contínua dos processos.
+📝 Incidentes são registrados e analisados em [postmortems](https://github.com/bloquo-inc/postmortems) — sem culpados, com foco em aprendizado e melhoria contínua dos processos.
 
 ## 🔗 Links
 
