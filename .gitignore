@@ -1,0 +1,14 @@
+# Configuração local de ferramentas — específica da máquina, nunca compartilhada.
+# Este repo é público: os arquivos abaixo carregam caminhos absolutos, endpoints
+# locais e bancos de memória de sessão.
+
+# Claude Code — settings.json (sem .local) fica versionado de propósito,
+# para configuração de time.
+.claude/settings.local.json
+.claude/.headroom_wrap_marker.json
+
+# Headroom — bancos binários de memória de sessão
+.headroom/
+
+# Serena — índice e config local do projeto
+.serena/
