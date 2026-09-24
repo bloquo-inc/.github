@@ -1,3 +1,7 @@
+## 🔗 Work item
+
+<!-- Link do ticket, issue ou tarefa relacionada (ex: Closes #N, Linear, Jira). Se não houver, escreva "N/A — <motivo>" (ex.: "N/A — correção pontual sem demanda formal"). -->
+
 ## 🎯 O que muda
 
 <!-- A capacidade que entra, em linguagem de domínio: o que o time ou o usuário passa a poder fazer. -->
@@ -13,6 +17,10 @@
 ## 🧪 Testes
 
 <!-- O que foi escrito e rodado, com resultado: números da suíte, gates de CI, verificação manual quando aplicável. Se algo não foi verificado, diga explicitamente. -->
+
+## 📸 Evidências
+
+<!-- Screenshots, logs, saída de terminal ou gravação mostrando a alteração funcionando dentro do fluxo de sistema (local, development ou staging — não produção). Use apenas dados sintéticos ou mascarados — não cole saída com token, Authorization header, connection string, credencial ou PII. Obrigatório para mudanças visíveis ou comportamentais; escreva "N/A" apenas quando não houver evidência de execução significativa (ex.: mudanças de documentação, metadados ou configuração sem efeito em runtime). -->
 
 ## ⚠️ Risco
 
