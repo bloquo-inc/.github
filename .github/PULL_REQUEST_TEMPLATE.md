@@ -1,6 +1,6 @@
 ## 🔗 Work item
 
-<!-- Link do ticket, issue ou tarefa relacionada (ex: Closes #N, Linear, Jira). Se não houver, escreva "N/A — <motivo>" (ex.: "N/A — correção pontual sem demanda formal"). -->
+<!-- Link do ticket, issue ou tarefa relacionada (ex: #<Numero da issue> no Github. Para Azure Devops usar AB#<Número do workitem>.). Se não houver, escreva "N/A — <motivo>" (ex.: "N/A — correção pontual sem demanda formal"). -->
 
 ## 🎯 O que muda
 
