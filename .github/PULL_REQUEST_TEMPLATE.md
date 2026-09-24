@@ -20,7 +20,7 @@
 
 ## 📸 Evidências
 
-<!-- Screenshots, logs, saída de terminal ou gravação mostrando a alteração funcionando dentro do fluxo de sistema (local, development ou staging — não produção). Use apenas dados sintéticos ou mascarados — não cole saída com token, Authorization header, connection string, credencial ou PII. Obrigatório para mudanças visíveis ou comportamentais; escreva "N/A" apenas para refatorações sem efeito observável. -->
+<!-- Screenshots, logs, saída de terminal ou gravação mostrando a alteração funcionando dentro do fluxo de sistema (local, development ou staging — não produção). Use apenas dados sintéticos ou mascarados — não cole saída com token, Authorization header, connection string, credencial ou PII. Obrigatório para mudanças visíveis ou comportamentais; escreva "N/A" apenas quando não houver evidência de execução significativa (ex.: mudanças de documentação, metadados ou configuração sem efeito em runtime). -->
 
 ## ⚠️ Risco
 
