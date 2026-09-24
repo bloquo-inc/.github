@@ -1,3 +1,7 @@
+## 🔗 Work item
+
+<!-- Link do ticket, issue ou tarefa relacionada (ex: Closes #N, Linear, Jira). -->
+
 ## 🎯 O que muda
 
 <!-- A capacidade que entra, em linguagem de domínio: o que o time ou o usuário passa a poder fazer. -->
@@ -13,6 +17,10 @@
 ## 🧪 Testes
 
 <!-- O que foi escrito e rodado, com resultado: números da suíte, gates de CI, verificação manual quando aplicável. Se algo não foi verificado, diga explicitamente. -->
+
+## 📸 Evidências
+
+<!-- Screenshots, logs, saída de terminal ou gravação mostrando a alteração funcionando dentro do fluxo de sistema (local, development ou staging — não produção). Obrigatório para mudanças visíveis ou comportamentais; escreva "N/A" apenas para refatorações sem efeito observável. -->
 
 ## ⚠️ Risco
 
