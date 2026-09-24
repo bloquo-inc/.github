@@ -1,6 +1,6 @@
 ## 🔗 Work item
 
-<!-- Link do ticket, issue ou tarefa relacionada (ex: Closes #N, Linear, Jira). -->
+<!-- Link do ticket, issue ou tarefa relacionada (ex: Closes #N, Linear, Jira). Se não houver, escreva "N/A — <motivo>" (ex.: "N/A — correção pontual sem demanda formal"). -->
 
 ## 🎯 O que muda
 
