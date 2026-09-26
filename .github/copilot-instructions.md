@@ -26,11 +26,15 @@ Use this context to judge whether the diff correctly and safely implements what 
 
 ## Output Format
 
-Todos os comentários devem ser escritos em **português brasileiro**.
+All comments must be written in **Brazilian Portuguese**.
 
-Para cada problema encontrado:
-- Aponte a **linha específica**.
-- Explique em uma frase curta **por que é um problema** — qual risco concreto isso representa (o que quebra, vaza ou permite exploração).
-- Sugira o **fix mínimo** necessário para resolver — nada além disso.
+Assign a severity to each finding: **CRITICAL**, **HIGH**, **MEDIUM**, or **LOW**.
 
-Se não houver problemas de segurança ou correção no diff, diga isso de forma breve e direta. Não preencha a revisão com observações neutras.
+Comment **only** on items classified as **HIGH** or **CRITICAL**. Silently discard any MEDIUM or LOW finding — do not list or mention them.
+
+For each comment:
+- Point to the **specific line**.
+- Explain in one short sentence **why it is a problem** — the concrete risk it represents (what breaks, leaks, or can be exploited).
+- Suggest the **minimal fix** needed to resolve it — nothing beyond that.
+
+If there are no HIGH or CRITICAL issues in the diff, say so briefly and directly. Do not fill the review with neutral observations.
