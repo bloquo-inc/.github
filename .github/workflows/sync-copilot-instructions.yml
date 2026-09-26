@@ -59,8 +59,7 @@ jobs:
               HEAD_SHA=$(gh api "repos/$FULL/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha' 2>/dev/null || { echo "FAILED $REPO (no default branch)"; continue; })
 
               # Create or reset sync branch
-              BRANCH_EXISTS=$(gh api "repos/$FULL/git/ref/heads/$BRANCH" 2>/dev/null && echo "yes" || echo "no")
-              if [ "$BRANCH_EXISTS" = "yes" ]; then
+              if gh api "repos/$FULL/git/ref/heads/$BRANCH" --silent 2>/dev/null; then
                 gh api "repos/$FULL/git/refs/heads/$BRANCH" -X PATCH -f sha="$HEAD_SHA" --silent
               else
                 gh api "repos/$FULL/git/refs" -X POST \
