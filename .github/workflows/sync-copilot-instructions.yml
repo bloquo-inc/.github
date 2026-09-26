@@ -38,30 +38,35 @@ jobs:
           | while read -r REPO; do
               FULL="${ORG}/${REPO}"
 
-              # Check current file content
-              RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "NOT_FOUND")
-
-              if echo "$RESPONSE" | grep -q '"sha"'; then
-                CURRENT_CONTENT=$(echo "$RESPONSE" | jq -r '.content' | tr -d '\n')
-                if [ "$CURRENT_CONTENT" = "$CONTENT" ]; then
-                  echo "SKIP   $REPO (no changes)"
-                  continue
-                fi
-                FILE_SHA=$(echo "$RESPONSE" | jq -r '.sha')
-              else
-                FILE_SHA=""
-              fi
-
-              # Get default branch
               DEFAULT_BRANCH=$(gh api "repos/$FULL" --jq '.default_branch' 2>/dev/null || echo "main")
 
-              # Get HEAD SHA of default branch
-              HEAD_SHA=$(gh api "repos/$FULL/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha' 2>/dev/null || { echo "FAILED $REPO (no default branch)"; continue; })
-
-              # Create or reset sync branch
+              # If sync branch already exists, compare against it (not the default branch)
               if gh api "repos/$FULL/git/ref/heads/$BRANCH" --silent 2>/dev/null; then
-                gh api "repos/$FULL/git/refs/heads/$BRANCH" -X PATCH -f sha="$HEAD_SHA" --silent
+                SYNC_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH?ref=$BRANCH" 2>/dev/null || echo "NOT_FOUND")
+                if echo "$SYNC_RESPONSE" | grep -q '"sha"'; then
+                  SYNC_CONTENT=$(echo "$SYNC_RESPONSE" | jq -r '.content' | tr -d '\n')
+                  if [ "$SYNC_CONTENT" = "$CONTENT" ]; then
+                    echo "SKIP   $REPO (PR already up to date)"
+                    continue
+                  fi
+                  FILE_SHA=$(echo "$SYNC_RESPONSE" | jq -r '.sha')
+                else
+                  FILE_SHA=""
+                fi
               else
+                # No sync branch yet — check default branch for existing file SHA
+                HEAD_SHA=$(gh api "repos/$FULL/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha' 2>/dev/null || { echo "FAILED $REPO (no default branch)"; continue; })
+                DEFAULT_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "NOT_FOUND")
+                if echo "$DEFAULT_RESPONSE" | grep -q '"sha"'; then
+                  DEFAULT_CONTENT=$(echo "$DEFAULT_RESPONSE" | jq -r '.content' | tr -d '\n')
+                  if [ "$DEFAULT_CONTENT" = "$CONTENT" ]; then
+                    echo "SKIP   $REPO (no changes)"
+                    continue
+                  fi
+                  FILE_SHA=$(echo "$DEFAULT_RESPONSE" | jq -r '.sha')
+                else
+                  FILE_SHA=""
+                fi
                 gh api "repos/$FULL/git/refs" -X POST \
                   -f ref="refs/heads/$BRANCH" \
                   -f sha="$HEAD_SHA" \
@@ -96,6 +101,6 @@ jobs:
                   && echo "PR_OPENED $REPO" \
                   || echo "FAILED    $REPO"
               else
-                echo "PR_EXISTS $REPO (#$EXISTING_PR)"
+                echo "PR_UPDATED $REPO (#$EXISTING_PR)"
               fi
             done
