@@ -30,7 +30,9 @@ All comments must be written in **Brazilian Portuguese**.
 
 Assign a severity to each finding: **CRITICAL**, **HIGH**, **MEDIUM**, or **LOW**.
 
-Comment **only** on items classified as **HIGH** or **CRITICAL**. Silently discard any MEDIUM or LOW finding — do not list or mention them.
+Comment **only** on items classified as **HIGH** or **CRITICAL** — these require changes before merge.
+
+If there are MEDIUM or LOW findings and no HIGH or CRITICAL ones, **approve the PR** and list those lower-severity items as suggestions (not blocking). If there are also HIGH or CRITICAL findings, discard the MEDIUM and LOW ones entirely — do not mention them.
 
 For each comment:
 - Point to the **specific line**.
