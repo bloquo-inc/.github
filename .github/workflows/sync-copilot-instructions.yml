@@ -24,7 +24,10 @@ jobs:
           ORG: ${{ github.repository_owner }}
           SOURCE: copilot-instructions.md
           TARGET_PATH: .github/copilot-instructions.md
+          BRANCH: chore/sync-copilot-instructions
           COMMIT_MSG: "chore: sync copilot-instructions from .github"
+          PR_TITLE: "chore: sync copilot-instructions from .github"
+          PR_BODY: "Sincronização automática do arquivo `copilot-instructions.md` a partir do repositório `.github` da organização."
         run: |
           set -euo pipefail
           CONTENT=$(base64 -w0 "$SOURCE")
@@ -35,33 +38,65 @@ jobs:
           | while read -r REPO; do
               FULL="${ORG}/${REPO}"
 
-              # Get current file SHA if it exists
+              # Check current file content
               RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "NOT_FOUND")
 
               if echo "$RESPONSE" | grep -q '"sha"'; then
-                CURRENT_SHA=$(echo "$RESPONSE" | jq -r '.sha')
                 CURRENT_CONTENT=$(echo "$RESPONSE" | jq -r '.content' | tr -d '\n')
-
-                # Skip if content is identical
                 if [ "$CURRENT_CONTENT" = "$CONTENT" ]; then
-                  echo "SKIP $REPO (no changes)"
+                  echo "SKIP   $REPO (no changes)"
                   continue
                 fi
-
-                gh api --method PUT "repos/$FULL/contents/$TARGET_PATH" \
-                  -f message="$COMMIT_MSG" \
-                  -f content="$CONTENT" \
-                  -f sha="$CURRENT_SHA" \
-                  --silent \
-                  && echo "UPDATED $REPO" \
-                  || echo "FAILED $REPO"
+                FILE_SHA=$(echo "$RESPONSE" | jq -r '.sha')
               else
-                # File doesn't exist — create it (also creates .github/ if needed)
-                gh api --method PUT "repos/$FULL/contents/$TARGET_PATH" \
+                FILE_SHA=""
+              fi
+
+              # Get default branch
+              DEFAULT_BRANCH=$(gh api "repos/$FULL" --jq '.default_branch' 2>/dev/null || echo "main")
+
+              # Get HEAD SHA of default branch
+              HEAD_SHA=$(gh api "repos/$FULL/git/ref/heads/$DEFAULT_BRANCH" --jq '.object.sha' 2>/dev/null || { echo "FAILED $REPO (no default branch)"; continue; })
+
+              # Create or reset sync branch
+              BRANCH_EXISTS=$(gh api "repos/$FULL/git/ref/heads/$BRANCH" 2>/dev/null && echo "yes" || echo "no")
+              if [ "$BRANCH_EXISTS" = "yes" ]; then
+                gh api "repos/$FULL/git/refs/heads/$BRANCH" -X PATCH -f sha="$HEAD_SHA" --silent
+              else
+                gh api "repos/$FULL/git/refs" -X POST \
+                  -f ref="refs/heads/$BRANCH" \
+                  -f sha="$HEAD_SHA" \
+                  --silent
+              fi
+
+              # Commit file onto sync branch
+              if [ -n "$FILE_SHA" ]; then
+                gh api "repos/$FULL/contents/$TARGET_PATH" -X PUT \
                   -f message="$COMMIT_MSG" \
                   -f content="$CONTENT" \
+                  -f sha="$FILE_SHA" \
+                  -f branch="$BRANCH" \
+                  --silent
+              else
+                gh api "repos/$FULL/contents/$TARGET_PATH" -X PUT \
+                  -f message="$COMMIT_MSG" \
+                  -f content="$CONTENT" \
+                  -f branch="$BRANCH" \
+                  --silent
+              fi
+
+              # Open PR if none exists already
+              EXISTING_PR=$(gh api "repos/$FULL/pulls?head=$ORG:$BRANCH&state=open" --jq '.[0].number' 2>/dev/null || echo "")
+              if [ -z "$EXISTING_PR" ] || [ "$EXISTING_PR" = "null" ]; then
+                gh api "repos/$FULL/pulls" -X POST \
+                  -f title="$PR_TITLE" \
+                  -f body="$PR_BODY" \
+                  -f head="$BRANCH" \
+                  -f base="$DEFAULT_BRANCH" \
                   --silent \
-                  && echo "CREATED $REPO" \
-                  || echo "FAILED $REPO"
+                  && echo "PR_OPENED $REPO" \
+                  || echo "FAILED    $REPO"
+              else
+                echo "PR_EXISTS $REPO (#$EXISTING_PR)"
               fi
             done
