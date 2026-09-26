@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - .github/copilot-instructions.md
+      - copilot-instructions.md
   schedule:
     - cron: '0 6 * * 1'
   workflow_dispatch:
@@ -22,7 +22,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.SYNC_TOKEN }}
           ORG: ${{ github.repository_owner }}
-          SOURCE: .github/copilot-instructions.md
+          SOURCE: copilot-instructions.md
           TARGET_PATH: .github/copilot-instructions.md
           COMMIT_MSG: "chore: sync copilot-instructions from .github"
         run: |
