@@ -52,7 +52,7 @@ jobs:
                       continue
                     fi
                     # No open PR — check if default branch already has the content (PR was merged)
-                    DEFAULT_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "NOT_FOUND")
+                    DEFAULT_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "{}")
                     DEFAULT_CONTENT=$(echo "$DEFAULT_RESPONSE" | jq -r '.content // ""' | tr -d '\n')
                     if [ "$DEFAULT_CONTENT" = "$CONTENT" ]; then
                       echo "SKIP   $REPO (already merged)"
