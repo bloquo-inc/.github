@@ -12,7 +12,7 @@ on:
 jobs:
   sync:
     if: github.ref == 'refs/heads/main'
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
     steps:
