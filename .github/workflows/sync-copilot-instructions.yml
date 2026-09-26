@@ -26,6 +26,7 @@ jobs:
           TARGET_PATH: .github/copilot-instructions.md
           COMMIT_MSG: "chore: sync copilot-instructions from .github"
         run: |
+          set -euo pipefail
           CONTENT=$(base64 -w0 "$SOURCE")
 
           gh api "orgs/$ORG/repos" \
