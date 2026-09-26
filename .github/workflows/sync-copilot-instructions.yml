@@ -46,8 +46,27 @@ jobs:
                 SYNC_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH?ref=$BRANCH" 2>/dev/null || echo "NOT_FOUND")
                 if echo "$SYNC_RESPONSE" | grep -q '"sha"'; then
                   SYNC_CONTENT=$(echo "$SYNC_RESPONSE" | jq -r '.content' | tr -d '\n')
-                  if [ "$SYNC_CONTENT" = "$CONTENT" ] && [ -n "$OPEN_PR" ] && [ "$OPEN_PR" != "null" ]; then
-                    echo "SKIP   $REPO (PR #$OPEN_PR already up to date)"
+                  if [ "$SYNC_CONTENT" = "$CONTENT" ]; then
+                    if [ -n "$OPEN_PR" ] && [ "$OPEN_PR" != "null" ]; then
+                      echo "SKIP   $REPO (PR #$OPEN_PR already up to date)"
+                      continue
+                    fi
+                    # No open PR — check if default branch already has the content (PR was merged)
+                    DEFAULT_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH" 2>/dev/null || echo "NOT_FOUND")
+                    DEFAULT_CONTENT=$(echo "$DEFAULT_RESPONSE" | jq -r '.content // ""' | tr -d '\n')
+                    if [ "$DEFAULT_CONTENT" = "$CONTENT" ]; then
+                      echo "SKIP   $REPO (already merged)"
+                      continue
+                    fi
+                    # Default is outdated and no open PR — open PR without re-committing
+                    gh api "repos/$FULL/pulls" -X POST \
+                      -f title="$PR_TITLE" \
+                      -f body="$PR_BODY" \
+                      -f head="$BRANCH" \
+                      -f base="$DEFAULT_BRANCH" \
+                      --silent \
+                      && echo "PR_REOPENED $REPO" \
+                      || echo "FAILED      $REPO"
                     continue
                   fi
                   FILE_SHA=$(echo "$SYNC_RESPONSE" | jq -r '.sha')
