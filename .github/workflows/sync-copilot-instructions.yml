@@ -42,11 +42,12 @@ jobs:
 
               # If sync branch already exists, compare against it (not the default branch)
               if gh api "repos/$FULL/git/ref/heads/$BRANCH" --silent 2>/dev/null; then
+                OPEN_PR=$(gh api "repos/$FULL/pulls?head=$ORG:$BRANCH&state=open" --jq '.[0].number' 2>/dev/null || echo "")
                 SYNC_RESPONSE=$(gh api "repos/$FULL/contents/$TARGET_PATH?ref=$BRANCH" 2>/dev/null || echo "NOT_FOUND")
                 if echo "$SYNC_RESPONSE" | grep -q '"sha"'; then
                   SYNC_CONTENT=$(echo "$SYNC_RESPONSE" | jq -r '.content' | tr -d '\n')
-                  if [ "$SYNC_CONTENT" = "$CONTENT" ]; then
-                    echo "SKIP   $REPO (PR already up to date)"
+                  if [ "$SYNC_CONTENT" = "$CONTENT" ] && [ -n "$OPEN_PR" ] && [ "$OPEN_PR" != "null" ]; then
+                    echo "SKIP   $REPO (PR #$OPEN_PR already up to date)"
                     continue
                   fi
                   FILE_SHA=$(echo "$SYNC_RESPONSE" | jq -r '.sha')
